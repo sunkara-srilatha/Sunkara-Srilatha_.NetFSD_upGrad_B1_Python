@@ -1,0 +1,30 @@
+{
+  "name": "e-learning-platform",
+  "version": "1.0.0",
+  "description": "Multi-Page E-Learning Platform (Frontend)",
+  "main": "script.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "serve": "python -m http.server 8000",
+    "start": "npm run serve"
+  },
+  "keywords": [
+    "e-learning",
+    "education",
+    "frontend",
+    "javascript",
+    "html",
+    "css"
+  ],
+  "author": "Student",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"]
+  }
+}

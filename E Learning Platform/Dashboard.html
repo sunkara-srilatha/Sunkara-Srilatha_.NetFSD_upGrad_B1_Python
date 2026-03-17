@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - E-Learning Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i> EduLearn
+            </div>
+            <ul class="nav-links">
+                <li><a href="Dashboard.html" class="active"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="Courses.html"><i class="fas fa-book"></i> Courses</a></li>
+                <li><a href="Quiz.html"><i class="fas fa-question-circle"></i> Quiz</a></li>
+                <li><a href="Profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="breadcrumb">
+            <ul>
+                <li><a href="Dashboard.html">Home</a></li>
+                <li>Dashboard</li>
+            </ul>
+        </section>
+
+        <h1 class="text-center mb-2">Welcome to Your Learning Dashboard</h1>
+        
+        <div class="dashboard-grid">
+            <div class="dashboard-card fade-in">
+                <h2><i class="fas fa-chart-line"></i> Learning Progress</h2>
+                <div class="mt-1">
+                    <label for="overall-progress">Overall Progress</label>
+                    <progress id="overall-progress" value="0" max="100">0%</progress>
+                    <p id="progress-text">0% Complete</p>
+                </div>
+            </div>
+
+            <div class="dashboard-card fade-in">
+                <h2><i class="fas fa-trophy"></i> Achievements</h2>
+                <div class="mt-1">
+                    <p><strong>Courses Completed:</strong> <span id="courses-completed">0</span></p>
+                    <p><strong>Quizzes Passed:</strong> <span id="quizzes-passed">0</span></p>
+                    <p><strong>Total Score:</strong> <span id="total-score">0</span></p>
+                </div>
+            </div>
+
+            <div class="dashboard-card fade-in">
+                <h2><i class="fas fa-clock"></i> Recent Activity</h2>
+                <div class="mt-1">
+                    <p><strong>Last Quiz:</strong> <span id="last-quiz">Not taken yet</span></p>
+                    <p><strong>Current Streak:</strong> <span id="streak">0 days</span></p>
+                    <p><strong>Study Time Today:</strong> <span id="study-time">0 minutes</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-card fade-in">
+            <h2><i class="fas fa-star"></i> Recommended Courses</h2>
+            <div id="recommended-courses" class="course-container">
+                <!-- Courses will be dynamically loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 EduLearn Platform. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Initialize Dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboardData();
+        });
+
+        function loadDashboardData() {
+            // Load user progress from localStorage
+            const userData = JSON.parse(localStorage.getItem('userData')) || {
+                coursesCompleted: [],
+                quizResults: [],
+                totalScore: 0,
+                streak: 0,
+                studyTime: 0
+            };
+
+            // Update progress
+            updateProgress(userData);
+            
+            // Update achievements
+            updateAchievements(userData);
+            
+            // Update recent activity
+            updateRecentActivity(userData);
+            
+            // Load recommended courses
+            loadRecommendedCourses(userData);
+        }
+
+        function updateProgress(userData) {
+            const totalCourses = courses.length;
+            const completedCourses = userData.coursesCompleted.length;
+            const progressPercentage = totalCourses > 0 ? (completedCourses / totalCourses) * 100 : 0;
+            
+            const progressBar = document.getElementById('overall-progress');
+            const progressText = document.getElementById('progress-text');
+            
+            progressBar.value = progressPercentage;
+            progressText.textContent = `${Math.round(progressPercentage)}% Complete`;
+        }
+
+        function updateAchievements(userData) {
+            document.getElementById('courses-completed').textContent = userData.coursesCompleted.length;
+            
+            const passedQuizzes = userData.quizResults.filter(quiz => quiz.passed).length;
+            document.getElementById('quizzes-passed').textContent = passedQuizzes;
+            
+            document.getElementById('total-score').textContent = userData.totalScore;
+        }
+
+        function updateRecentActivity(userData) {
+            if (userData.quizResults.length > 0) {
+                const lastQuiz = userData.quizResults[userData.quizResults.length - 1];
+                const lastQuizDate = new Date(lastQuiz.date).toLocaleDateString();
+                document.getElementById('last-quiz').textContent = lastQuizDate;
+            }
+            
+            document.getElementById('streak').textContent = `${userData.streak} days`;
+            document.getElementById('study-time').textContent = `${userData.studyTime} minutes`;
+        }
+
+        function loadRecommendedCourses(userData) {
+            const container = document.getElementById('recommended-courses');
+            const completedCourseIds = userData.coursesCompleted;
+            
+            // Filter courses that are not completed
+            const recommendedCourses = courses.filter(course => 
+                !completedCourseIds.includes(course.id)
+            ).slice(0, 3); // Show top 3 recommendations
+            
+            container.innerHTML = '';
+            
+            recommendedCourses.forEach(course => {
+                const courseCard = createCourseCard(course);
+                container.appendChild(courseCard);
+            });
+        }
+
+        function createCourseCard(course) {
+            const card = document.createElement('div');
+            card.className = 'course-card';
+            card.setAttribute('data-difficulty', course.difficulty);
+            
+            card.innerHTML = `
+                <div class="course-card-header">
+                    <h3>${course.title}</h3>
+                    <p><i class="fas fa-signal"></i> ${course.difficulty}</p>
+                </div>
+                <div class="course-card-body">
+                    <p>${course.description}</p>
+                    <p><strong>Duration:</strong> ${course.duration}</p>
+                    <p><strong>Lessons:</strong> ${course.lessons.length}</p>
+                    <a href="Courses.html" class="btn mt-1">Start Learning</a>
+                </div>
+            `;
+            
+            return card;
+        }
+    </script>
+</body>
+</html>

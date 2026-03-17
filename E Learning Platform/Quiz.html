@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - E-Learning Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i> EduLearn
+            </div>
+            <ul class="nav-links">
+                <li><a href="Dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="Courses.html"><i class="fas fa-book"></i> Courses</a></li>
+                <li><a href="Quiz.html" class="active"><i class="fas fa-question-circle"></i> Quiz</a></li>
+                <li><a href="Profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="breadcrumb">
+            <ul>
+                <li><a href="Dashboard.html">Home</a></li>
+                <li><a href="Quiz.html">Quiz</a></li>
+                <li>Take Quiz</li>
+            </ul>
+        </section>
+
+        <h1 class="text-center mb-2">Knowledge Quiz</h1>
+        
+        <div id="quiz-container" class="quiz-container">
+            <!-- Quiz will be dynamically loaded here -->
+            <div id="loading-section" class="text-center">
+                <div class="loading"></div>
+                <p>Loading quiz questions...</p>
+            </div>
+            
+            <div id="quiz-content" class="hidden">
+                <!-- Quiz questions will be loaded here -->
+            </div>
+            
+            <div id="quiz-results" class="results-container hidden">
+                <!-- Results will be displayed here -->
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 EduLearn Platform. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Quiz State
+        let currentQuiz = {
+            questions: [],
+            currentQuestionIndex: 0,
+            userAnswers: [],
+            startTime: null,
+            endTime: null
+        };
+
+        // Initialize Quiz
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeQuiz();
+        });
+
+        async function initializeQuiz() {
+            try {
+                // Simulate async loading with Promise and setTimeout
+                await loadQuizAsync();
+            } catch (error) {
+                console.error('Error loading quiz:', error);
+                showErrorMessage('Failed to load quiz. Please try again.');
+            }
+        }
+
+        // Async function to simulate quiz loading
+        async function loadQuizAsync() {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    try {
+                        // Load quiz questions from the global quizQuestions array
+                        currentQuiz.questions = [...quizQuestions];
+                        currentQuiz.userAnswers = new Array(currentQuiz.questions.length).fill(null);
+                        currentQuiz.startTime = new Date();
+                        
+                        displayQuiz();
+                        resolve();
+                    } catch (error) {
+                        reject(error);
+                    }
+                }, 2000); // Simulate 2 second loading time
+            });
+        }
+
+        function displayQuiz() {
+            const loadingSection = document.getElementById('loading-section');
+            const quizContent = document.getElementById('quiz-content');
+            
+            loadingSection.classList.add('hidden');
+            quizContent.classList.remove('hidden');
+            
+            displayCurrentQuestion();
+        }
+
+        function displayCurrentQuestion() {
+            const quizContent = document.getElementById('quiz-content');
+            const question = currentQuiz.questions[currentQuiz.currentQuestionIndex];
+            
+            quizContent.innerHTML = `
+                <div class="question-header">
+                    <h2>Question ${currentQuiz.currentQuestionIndex + 1} of ${currentQuiz.questions.length}</h2>
+                    <div class="progress-container">
+                        <label for="quiz-progress">Progress</label>
+                        <progress id="quiz-progress" value="${currentQuiz.currentQuestionIndex + 1}" max="${currentQuiz.questions.length}">
+                            ${currentQuiz.currentQuestionIndex + 1}/${currentQuiz.questions.length}
+                        </progress>
+                    </div>
+                </div>
+                
+                <div class="question-card">
+                    <h3>${question.question}</h3>
+                    <ul class="options-list">
+                        ${question.options.map((option, index) => `
+                            <li>
+                                <input type="radio" 
+                                       id="option-${index}" 
+                                       name="answer" 
+                                       value="${index}"
+                                       onchange="selectAnswer(${index})"
+                                       ${currentQuiz.userAnswers[currentQuiz.currentQuestionIndex] === index ? 'checked' : ''}>
+                                <label for="option-${index}">${option}</label>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+                
+                <div class="quiz-navigation">
+                    ${currentQuiz.currentQuestionIndex > 0 ? 
+                        `<button class="btn btn-secondary" onclick="previousQuestion()">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>` : ''
+                    }
+                    
+                    ${currentQuiz.currentQuestionIndex < currentQuiz.questions.length - 1 ? 
+                        `<button class="btn" onclick="nextQuestion()">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>` :
+                        `<button class="btn btn-success" onclick="submitQuiz()">
+                            <i class="fas fa-check"></i> Submit Quiz
+                        </button>`
+                    }
+                </div>
+            `;
+        }
+
+        function selectAnswer(answerIndex) {
+            currentQuiz.userAnswers[currentQuiz.currentQuestionIndex] = answerIndex;
+        }
+
+        function nextQuestion() {
+            if (currentQuiz.currentQuestionIndex < currentQuiz.questions.length - 1) {
+                currentQuiz.currentQuestionIndex++;
+                displayCurrentQuestion();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuiz.currentQuestionIndex > 0) {
+                currentQuiz.currentQuestionIndex--;
+                displayCurrentQuestion();
+            }
+        }
+
+        function submitQuiz() {
+            // Check if all questions are answered
+            const unansweredQuestions = currentQuiz.userAnswers.filter(answer => answer === null).length;
+            if (unansweredQuestions > 0) {
+                if (!confirm(`You have ${unansweredQuestions} unanswered questions. Are you sure you want to submit?`)) {
+                    return;
+                }
+            }
+            
+            currentQuiz.endTime = new Date();
+            calculateResults();
+        }
+
+        function calculateResults() {
+            let correctAnswers = 0;
+            const results = [];
+            
+            currentQuiz.questions.forEach((question, index) => {
+                const userAnswer = currentQuiz.userAnswers[index];
+                const isCorrect = userAnswer === question.correctAnswer;
+                
+                if (isCorrect) {
+                    correctAnswers++;
+                }
+                
+                results.push({
+                    question: question.question,
+                    userAnswer: userAnswer !== null ? question.options[userAnswer] : 'Not answered',
+                    correctAnswer: question.options[question.correctAnswer],
+                    isCorrect: isCorrect
+                });
+            });
+            
+            const scorePercentage = (correctAnswers / currentQuiz.questions.length) * 100;
+            const grade = calculateGrade(scorePercentage);
+            const feedback = getFeedback(scorePercentage);
+            const passed = scorePercentage >= 60;
+            
+            displayResults(correctAnswers, scorePercentage, grade, feedback, passed, results);
+            saveQuizResults(correctAnswers, scorePercentage, passed);
+        }
+
+        function calculateGrade(scorePercentage) {
+            // Use if-else for grade calculation
+            if (scorePercentage >= 90) return 'A+';
+            else if (scorePercentage >= 80) return 'A';
+            else if (scorePercentage >= 70) return 'B';
+            else if (scorePercentage >= 60) return 'C';
+            else if (scorePercentage >= 50) return 'D';
+            else return 'F';
+        }
+
+        function getFeedback(scorePercentage) {
+            // Use switch statement for performance feedback
+            switch (true) {
+                case (scorePercentage >= 90):
+                    return "Outstanding! You're a master of this subject!";
+                case (scorePercentage >= 80):
+                    return "Excellent work! You have a strong understanding.";
+                case (scorePercentage >= 70):
+                    return "Good job! Keep practicing to improve further.";
+                case (scorePercentage >= 60):
+                    return "You passed! Review the material to strengthen your knowledge.";
+                case (scorePercentage >= 50):
+                    return "Almost there! A bit more practice will help you pass.";
+                default:
+                    return "Keep studying! Practice makes perfect.";
+            }
+        }
+
+        function displayResults(correctAnswers, scorePercentage, grade, feedback, passed, results) {
+            const quizContent = document.getElementById('quiz-content');
+            const resultsContainer = document.getElementById('quiz-results');
+            
+            quizContent.classList.add('hidden');
+            resultsContainer.classList.remove('hidden');
+            
+            const timeTaken = Math.round((currentQuiz.endTime - currentQuiz.startTime) / 1000);
+            
+            resultsContainer.innerHTML = `
+                <h2>Quiz Results</h2>
+                
+                <div class="score-display">${scorePercentage.toFixed(1)}%</div>
+                
+                <div class="results-summary">
+                    <p><strong>Grade:</strong> <span class="grade-${grade.toLowerCase()}">${grade}</span></p>
+                    <p><strong>Correct Answers:</strong> ${correctAnswers} out of ${currentQuiz.questions.length}</p>
+                    <p><strong>Status:</strong> <span class="${passed ? 'pass' : 'fail'}">${passed ? 'PASSED' : 'FAILED'}</span></p>
+                    <p><strong>Time Taken:</strong> ${timeTaken} seconds</p>
+                </div>
+                
+                <div class="feedback-section">
+                    <h3>${feedback}</h3>
+                </div>
+                
+                <div class="detailed-results">
+                    <h3>Review Your Answers:</h3>
+                    ${results.map((result, index) => `
+                        <div class="result-item ${result.isCorrect ? 'correct' : 'incorrect'}">
+                            <h4>Question ${index + 1}</h4>
+                            <p><strong>Question:</strong> ${result.question}</p>
+                            <p><strong>Your Answer:</strong> ${result.userAnswer}</p>
+                            <p><strong>Correct Answer:</strong> ${result.correctAnswer}</p>
+                            <p><strong>Result:</strong> ${result.isCorrect ? '✓ Correct' : '✗ Incorrect'}</p>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="quiz-actions">
+                    <button class="btn" onclick="retakeQuiz()">
+                        <i class="fas fa-redo"></i> Retake Quiz
+                    </button>
+                    <a href="Dashboard.html" class="btn btn-secondary">
+                        <i class="fas fa-home"></i> Back to Dashboard
+                    </a>
+                </div>
+            `;
+        }
+
+        function saveQuizResults(correctAnswers, scorePercentage, passed) {
+            const userData = JSON.parse(localStorage.getItem('userData')) || {
+                coursesCompleted: [],
+                coursesInProgress: [],
+                quizResults: [],
+                totalScore: 0,
+                streak: 0,
+                studyTime: 0
+            };
+            
+            const quizResult = {
+                date: new Date().toISOString(),
+                score: scorePercentage,
+                correctAnswers: correctAnswers,
+                totalQuestions: currentQuiz.questions.length,
+                grade: calculateGrade(scorePercentage),
+                passed: passed,
+                timeTaken: Math.round((currentQuiz.endTime - currentQuiz.startTime) / 1000)
+            };
+            
+            userData.quizResults.push(quizResult);
+            userData.totalScore += scorePercentage;
+            
+            // Update streak if passed
+            if (passed) {
+                userData.streak += 1;
+            } else {
+                userData.streak = 0;
+            }
+            
+            localStorage.setItem('userData', JSON.stringify(userData));
+        }
+
+        function retakeQuiz() {
+            // Reset quiz state
+            currentQuiz = {
+                questions: [],
+                currentQuestionIndex: 0,
+                userAnswers: [],
+                startTime: null,
+                endTime: null
+            };
+            
+            // Reset UI
+            document.getElementById('quiz-results').classList.add('hidden');
+            document.getElementById('loading-section').classList.remove('hidden');
+            
+            // Reload quiz
+            initializeQuiz();
+        }
+
+        function showErrorMessage(message) {
+            const loadingSection = document.getElementById('loading-section');
+            loadingSection.innerHTML = `
+                <div style="color: #ef5350;">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 2rem;"></i>
+                    <p>${message}</p>
+                    <button class="btn btn-secondary" onclick="location.reload()">Try Again</button>
+                </div>
+            `;
+        }
+
+        // Add custom styles for quiz results
+        const style = document.createElement('style');
+        style.textContent = `
+            .question-header {
+                margin-bottom: 2rem;
+                text-align: center;
+            }
+            
+            .progress-container {
+                margin-top: 1rem;
+            }
+            
+            .quiz-navigation {
+                display: flex;
+                justify-content: space-between;
+                margin-top: 2rem;
+                gap: 1rem;
+            }
+            
+            .results-summary {
+                background: rgba(102, 126, 234, 0.1);
+                padding: 1.5rem;
+                border-radius: 10px;
+                margin: 1rem 0;
+            }
+            
+            .feedback-section {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 1.5rem;
+                border-radius: 10px;
+                margin: 1rem 0;
+                text-align: center;
+            }
+            
+            .detailed-results {
+                margin-top: 2rem;
+            }
+            
+            .result-item {
+                background: rgba(255, 255, 255, 0.9);
+                padding: 1rem;
+                margin-bottom: 1rem;
+                border-radius: 8px;
+                border-left: 4px solid;
+            }
+            
+            .result-item.correct {
+                border-left-color: #43e97b;
+            }
+            
+            .result-item.incorrect {
+                border-left-color: #ef5350;
+            }
+            
+            .quiz-actions {
+                display: flex;
+                gap: 1rem;
+                justify-content: center;
+                margin-top: 2rem;
+            }
+            
+            .grade-a+ { color: #43e97b; font-weight: bold; }
+            .grade-a { color: #66bb6a; font-weight: bold; }
+            .grade-b { color: #ffa726; font-weight: bold; }
+            .grade-c { color: #ff9800; font-weight: bold; }
+            .grade-d { color: #ef5350; font-weight: bold; }
+            .grade-f { color: #d32f2f; font-weight: bold; }
+            
+            .pass { color: #43e97b; font-weight: bold; }
+            .fail { color: #ef5350; font-weight: bold; }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

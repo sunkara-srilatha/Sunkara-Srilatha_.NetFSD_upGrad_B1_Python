@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - E-Learning Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-graduation-cap"></i> EduLearn
+            </div>
+            <ul class="nav-links">
+                <li><a href="Dashboard.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="Courses.html"><i class="fas fa-book"></i> Courses</a></li>
+                <li><a href="Quiz.html"><i class="fas fa-question-circle"></i> Quiz</a></li>
+                <li><a href="Profile.html" class="active"><i class="fas fa-user"></i> Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="breadcrumb">
+            <ul>
+                <li><a href="Dashboard.html">Home</a></li>
+                <li><a href="Profile.html">Profile</a></li>
+                <li>My Profile</li>
+            </ul>
+        </section>
+
+        <h1 class="text-center mb-2">My Learning Profile</h1>
+        
+        <div class="profile-container">
+            <div class="profile-card fade-in">
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h2 id="student-name">Student Name</h2>
+                <p id="student-email">student@example.com</p>
+                <p><strong>Member Since:</strong> <span id="member-since">January 2024</span></p>
+                
+                <div class="mt-2">
+                    <h3>Learning Stats</h3>
+                    <p><strong>Total Courses:</strong> <span id="total-courses">0</span></p>
+                    <p><strong>Completed:</strong> <span id="completed-courses">0</span></p>
+                    <p><strong>In Progress:</strong> <span id="in-progress-courses">0</span></p>
+                    <p><strong>Current Streak:</strong> <span id="current-streak">0 days</span></p>
+                </div>
+                
+                <div class="mt-2">
+                    <button class="btn" onclick="editProfile()">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </button>
+                </div>
+            </div>
+            
+            <div class="profile-content">
+                <div class="dashboard-card fade-in">
+                    <h2><i class="fas fa-chart-line"></i> Learning Progress</h2>
+                    <div class="mt-1">
+                        <label for="profile-progress">Overall Progress</label>
+                        <progress id="profile-progress" value="0" max="100">0%</progress>
+                        <p id="profile-progress-text">0% Complete</p>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card fade-in">
+                    <h2><i class="fas fa-trophy"></i> Quiz Performance</h2>
+                    <div class="mt-1">
+                        <p><strong>Total Quizzes Taken:</strong> <span id="total-quizzes">0</span></p>
+                        <p><strong>Average Score:</strong> <span id="average-score">0%</span></p>
+                        <p><strong>Best Score:</strong> <span id="best-score">0%</span></p>
+                        <p><strong>Pass Rate:</strong> <span id="pass-rate">0%</span></p>
+                    </div>
+                </div>
+                
+                <div class="dashboard-card fade-in">
+                    <h2><i class="fas fa-book"></i> Completed Courses</h2>
+                    <div id="completed-courses-list" class="course-list">
+                        <!-- Completed courses will be displayed here -->
+                    </div>
+                </div>
+                
+                <div class="dashboard-card fade-in">
+                    <h2><i class="fas fa-clock"></i> Recent Activity</h2>
+                    <div id="recent-activity">
+                        <!-- Recent activity will be displayed here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 EduLearn Platform. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Initialize Profile Page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProfileData();
+        });
+
+        function loadProfileData() {
+            // Load user data from localStorage
+            const userData = JSON.parse(localStorage.getItem('userData')) || {
+                name: 'Student Name',
+                email: 'student@example.com',
+                memberSince: 'January 2024',
+                coursesCompleted: [],
+                coursesInProgress: [],
+                quizResults: [],
+                totalScore: 0,
+                streak: 0,
+                studyTime: 0
+            };
+            
+            // Update profile information
+            updateProfileInfo(userData);
+            
+            // Update learning statistics
+            updateLearningStats(userData);
+            
+            // Update progress
+            updateProgress(userData);
+            
+            // Update quiz performance
+            updateQuizPerformance(userData);
+            
+            // Display completed courses
+            displayCompletedCourses(userData);
+            
+            // Display recent activity
+            displayRecentActivity(userData);
+        }
+
+        function updateProfileInfo(userData) {
+            document.getElementById('student-name').textContent = userData.name || 'Student Name';
+            document.getElementById('student-email').textContent = userData.email || 'student@example.com';
+            document.getElementById('member-since').textContent = userData.memberSince || 'January 2024';
+        }
+
+        function updateLearningStats(userData) {
+            const totalCourses = courses.length;
+            const completedCourses = userData.coursesCompleted.length;
+            const inProgressCourses = userData.coursesInProgress.length;
+            
+            document.getElementById('total-courses').textContent = totalCourses;
+            document.getElementById('completed-courses').textContent = completedCourses;
+            document.getElementById('in-progress-courses').textContent = inProgressCourses;
+            document.getElementById('current-streak').textContent = `${userData.streak} days`;
+        }
+
+        function updateProgress(userData) {
+            const totalCourses = courses.length;
+            const completedCourses = userData.coursesCompleted.length;
+            const progressPercentage = totalCourses > 0 ? (completedCourses / totalCourses) * 100 : 0;
+            
+            const progressBar = document.getElementById('profile-progress');
+            const progressText = document.getElementById('profile-progress-text');
+            
+            progressBar.value = progressPercentage;
+            progressText.textContent = `${Math.round(progressPercentage)}% Complete`;
+        }
+
+        function updateQuizPerformance(userData) {
+            const quizResults = userData.quizResults || [];
+            const totalQuizzes = quizResults.length;
+            
+            if (totalQuizzes > 0) {
+                const totalScore = quizResults.reduce((sum, quiz) => sum + quiz.score, 0);
+                const averageScore = totalScore / totalQuizzes;
+                const bestScore = Math.max(...quizResults.map(quiz => quiz.score));
+                const passedQuizzes = quizResults.filter(quiz => quiz.passed).length;
+                const passRate = (passedQuizzes / totalQuizzes) * 100;
+                
+                document.getElementById('total-quizzes').textContent = totalQuizzes;
+                document.getElementById('average-score').textContent = `${averageScore.toFixed(1)}%`;
+                document.getElementById('best-score').textContent = `${bestScore.toFixed(1)}%`;
+                document.getElementById('pass-rate').textContent = `${passRate.toFixed(1)}%`;
+            } else {
+                document.getElementById('total-quizzes').textContent = '0';
+                document.getElementById('average-score').textContent = '0%';
+                document.getElementById('best-score').textContent = '0%';
+                document.getElementById('pass-rate').textContent = '0%';
+            }
+        }
+
+        function displayCompletedCourses(userData) {
+            const container = document.getElementById('completed-courses-list');
+            const completedCourseIds = userData.coursesCompleted || [];
+            
+            if (completedCourseIds.length === 0) {
+                container.innerHTML = '<p>No courses completed yet. Start learning today!</p>';
+                return;
+            }
+            
+            const completedCourses = courses.filter(course => 
+                completedCourseIds.includes(course.id)
+            );
+            
+            container.innerHTML = '';
+            
+            completedCourses.forEach(course => {
+                const courseItem = document.createElement('div');
+                courseItem.className = 'completed-course-item';
+                courseItem.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: rgba(255, 255, 255, 0.9); border-radius: 8px; margin-bottom: 0.5rem;">
+                        <i class="fas fa-check-circle" style="color: #43e97b; font-size: 1.5rem;"></i>
+                        <div>
+                            <h4>${course.title}</h4>
+                            <p style="margin: 0; color: #666; font-size: 0.9rem;">${course.category} • ${course.duration}</p>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(courseItem);
+            });
+        }
+
+        function displayRecentActivity(userData) {
+            const container = document.getElementById('recent-activity');
+            const activities = [];
+            
+            // Add quiz results to activity
+            if (userData.quizResults && userData.quizResults.length > 0) {
+                const recentQuizzes = userData.quizResults.slice(-3).reverse();
+                recentQuizzes.forEach(quiz => {
+                    const date = new Date(quiz.date).toLocaleDateString();
+                    activities.push({
+                        type: 'quiz',
+                        icon: 'fa-question-circle',
+                        title: `Quiz Completed`,
+                        description: `Score: ${quiz.score.toFixed(1)}% - ${quiz.passed ? 'Passed' : 'Failed'}`,
+                        date: date
+                    });
+                });
+            }
+            
+            // Add course completions to activity
+            if (userData.coursesCompleted && userData.coursesCompleted.length > 0) {
+                userData.coursesCompleted.forEach(courseId => {
+                    const course = courses.find(c => c.id === courseId);
+                    if (course) {
+                        activities.push({
+                            type: 'course',
+                            icon: 'fa-graduation-cap',
+                            title: 'Course Completed',
+                            description: course.title,
+                            date: 'Recently'
+                        });
+                    }
+                });
+            }
+            
+            if (activities.length === 0) {
+                container.innerHTML = '<p>No recent activity. Start learning and taking quizzes to see your progress here!</p>';
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            activities.forEach(activity => {
+                const activityItem = document.createElement('div');
+                activityItem.className = 'activity-item';
+                activityItem.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: rgba(255, 255, 255, 0.9); border-radius: 8px; margin-bottom: 0.5rem;">
+                        <i class="fas ${activity.icon}" style="color: #667eea; font-size: 1.2rem;"></i>
+                        <div style="flex: 1;">
+                            <h4 style="margin: 0; font-size: 0.95rem;">${activity.title}</h4>
+                            <p style="margin: 0; color: #666; font-size: 0.85rem;">${activity.description}</p>
+                        </div>
+                        <small style="color: #999;">${activity.date}</small>
+                    </div>
+                `;
+                container.appendChild(activityItem);
+            });
+        }
+
+        function editProfile() {
+            const userData = JSON.parse(localStorage.getItem('userData')) || {};
+            
+            const newName = prompt('Enter your name:', userData.name || 'Student Name');
+            if (newName && newName.trim()) {
+                userData.name = newName.trim();
+            }
+            
+            const newEmail = prompt('Enter your email:', userData.email || 'student@example.com');
+            if (newEmail && newEmail.trim()) {
+                userData.email = newEmail.trim();
+            }
+            
+            localStorage.setItem('userData', JSON.stringify(userData));
+            
+            // Reload profile data
+            loadProfileData();
+            
+            // Show success message
+            showNotification('Profile updated successfully!');
+        }
+
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                <span>${message}</span>
+            `;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                box-shadow: 0 5px 20px rgba(67, 233, 123, 0.4);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                animation: slideIn 0.3s ease-out;
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove notification after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-out';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Add notification animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+            
+            .completed-course-item {
+                margin-bottom: 0.5rem;
+            }
+            
+            .activity-item {
+                margin-bottom: 0.5rem;
+            }
+            
+            .profile-content {
+                display: flex;
+                flex-direction: column;
+                gap: 2rem;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
