@@ -1,0 +1,26 @@
+MONTHLY TREND REPORT
+Month: April 2026
+Generated: 2026-04-24 12:59:43
+============================================================
+
+MONTHLY STATISTICS
+Total Tickets: 11
+
+MOST COMMON ISSUES
+1. Server Down: 4 (36.4%)
+2. Laptop Slow: 2 (18.2%)
+3. Password Reset: 2 (18.2%)
+4. Internet Down: 1 (9.1%)
+5. Printer Not Working: 1 (9.1%)
+6. Application Crash: 1 (9.1%)
+
+DEPARTMENT ANALYSIS
+IT: 5 (45.5%)
+HR: 4 (36.4%)
+hr: 2 (18.2%)
+
+RESOLUTION ANALYSIS
+Average Resolution Time: 0.1 hours
+Fastest Resolution: 0.0 hours
+Slowest Resolution: 0.4 hours
+

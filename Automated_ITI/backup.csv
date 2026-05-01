@@ -1,0 +1,13 @@
+ticket_id,employee_name,department,category,issue_description,priority,status,created_datetime,updated_datetime,sla_deadline,sla_breached
+TICKET-4729830C,John Smith,IT,Server Down,Main application server is not responding,P1,In Progress,2026-04-22 18:17:48,2026-04-22 18:17:48,2026-04-22 19:17:48,False
+TICKET-BC40552E,Srilatha,IT,Laptop Slow,My laptop is running very slow while opening applications.,P3,Closed,2026-04-22 18:25:05,2026-04-22 18:30:52,2026-04-23 02:25:05,False
+TICKET-4D4CCD2D,John Smith,IT,Server Down,Main application server is not responding,P1,In Progress,2026-04-22 18:42:28,2026-04-22 18:42:28,2026-04-22 19:42:28,False
+TICKET-A93A041A,Jane Doe,HR,Password Reset,Need to reset network password for new employee,P4,Open,2026-04-22 18:42:28,2026-04-22 18:42:28,2026-04-23 18:42:28,False
+TICKET-3823A09D,Siva,IT,Password Reset,forgot my password,P4,Open,2026-04-22 18:56:46,2026-04-22 18:56:46,2026-04-23 18:56:46,False
+TICKET-7BB0207A,Sree,IT,Internet Down,Internet Slow,P2,Open,2026-04-23 09:44:24,2026-04-23 09:44:24,2026-04-23 13:44:24,False
+TICKET-F850BD50,Latha,HR,Laptop Slow,forgot password,P3,Closed,2026-04-23 12:19:48,2026-04-23 12:20:11,2026-04-23 20:19:48,False
+TICKET-3C5A0032,bindhu,hr,Printer Not Working,printer not working,P3,Closed,2026-04-24 09:26:03,2026-04-24 09:49:51,2026-04-24 17:26:03,False
+TICKET-578E93EE,Aman,HR,Application Crash,Applications is crashed,P2,Closed,2026-04-24 11:35:34,2026-04-24 11:36:20,2026-04-24 15:35:34,False
+TICKET-03A24DCF,sri,hr,Server Down,server down,P1,Closed,2026-04-24 12:21:01,2026-04-24 12:34:59,2026-04-24 13:21:01,False
+TICKET-A30C801F,Muskhan,HR,Laptop Slow,Laptop slow,P3,Open,2026-04-24 12:41:36,2026-04-24 12:41:36,2026-04-24 20:41:36,False
+TICKET-39ED60C7,Sss,IT,Server Down,Server down,P1,Open,2026-04-30 15:41:52,2026-04-30 15:41:52,2026-04-30 16:41:52,False
